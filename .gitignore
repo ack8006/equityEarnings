@@ -1,0 +1,4 @@
+dbconn*
+equityEarningsVenv/
+*.pyc
+*.py.swp
