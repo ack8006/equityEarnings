@@ -18,7 +18,6 @@ def scrape_earnings_page(last_date):
     page = requests.get(url)
     tree = html.fromstring(page.text)
     earnings_lines_count = len(tree.xpath('//*/td/table[1]/tr'))
-    print earnings_lines_count
     lines = []
     for x in xrange(3, earnings_lines_count):
         line = tree.xpath('//*/td/table[1]/tr[{}]/td//text()'.format(str(x)))
@@ -29,9 +28,20 @@ def scrape_earnings_page(last_date):
 def prepare_line(line):
     #If no ticker
     if len(line) == 2: line.append(None)
-    elif line[2] == 'Time Not Supplied': line[2] = None
+    #elif line[2] == 'Time Not Supplied': line[2] = None
     #Sometimes unndeeded fourth entry
+    if parse_eps_field(line[2]):
+        line.pop(2)
     return line[:3]
+
+def parse_eps_field(s):
+    if s == 'N/A':
+        return True
+    try:
+        float(s)
+        return True
+    except ValueError, TypeError:
+        return False
 
 def upload_earnings_information(date, lines):
     conn = start_db_connection(DB_CONNECTION_TYPE)
@@ -50,7 +60,6 @@ def upload_earnings_information(date, lines):
     conn.commit()
     conn.close()
 
-
 def calculate_string_date(last_date):
     return last_date.strftime("%Y%m%d")
 
@@ -62,11 +71,9 @@ def get_min_db_date():
     conn.close()
     return last_date
 
-
 if __name__ == '__main__':
     last_date = get_min_db_date()
     to_date = datetime.datetime.now().date()+datetime.timedelta(days=14)
-    print last_date, to_date
     while last_date < to_date:
         scrape_earnings_page(last_date)
         last_date += datetime.timedelta(days=1)
