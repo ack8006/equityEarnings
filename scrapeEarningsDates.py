@@ -1,5 +1,7 @@
 from lxml import html
 import requests
+import sys
+sys.path.append('../13F')
 from dbconnection import start_db_connection
 from contextlib import closing
 import datetime
@@ -7,6 +9,7 @@ import psycopg2
 
 
 DB_CONNECTION_TYPE = 'local'
+#DB_CONNECTION_TYPE = 'AWS'
 
 
 def scrape_earnings_page(last_date):
