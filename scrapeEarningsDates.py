@@ -75,6 +75,7 @@ if __name__ == '__main__':
     last_date = get_min_db_date()
     to_date = datetime.datetime.now().date()+datetime.timedelta(days=14)
     while last_date < to_date:
+        print last_date
         scrape_earnings_page(last_date)
         last_date += datetime.timedelta(days=1)
 

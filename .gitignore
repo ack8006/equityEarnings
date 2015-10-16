@@ -2,3 +2,4 @@ dbconn*
 equityEarningsVenv/
 *.pyc
 *.py.swp
+keys*
